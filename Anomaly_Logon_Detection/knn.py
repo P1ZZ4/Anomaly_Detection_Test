@@ -5,8 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # loading data - 정상에 비정상 데이터를 concat하여 데이터 셋으로 사용 
-df1 = pd.read_csv("good.csv")
-df2 = pd.read_csv("bad.csv")
+df1 = pd.read_csv("user_log_1.csv")
+df2 = pd.read_csv("user_log_2.csv")
 df = pd.concat([df1,df2])
 
 # feature 선정
