@@ -10,11 +10,12 @@ for i,j in zip(k,acc):
 
 knn = KNeighborsClassifier(n_neighbors=4).fit(X_train, y_train)
 
-## model save (pkl file
+## model save (pkl file)
 import pickle
 model = open("system.pkl",'wb')
 pickle.dump(knn,model)
 loaded_model = pickle.load(open('system.pkl', 'rb'))
 result = loaded_model.predict(X_test)
+
 
 
