@@ -46,6 +46,7 @@ joblib.dump(best_model, 'best_model3.pkl')
 
 # 테스트
 
+
 import joblib
 import os
 import pandas as pd
@@ -65,10 +66,7 @@ class SysModel:
     def predict(self, data, return_option='Prob'):
         #df = pd.DataFrame(data)
         df = pd.DataFrame(x_test, columns=['islan','isnewip','isnewuser','isvpn','percent','src_ip_c'])
-        if return_option == 'Prob':
-            predictions = self.model.predict(df) #추후 추가
-        else:
-            predictions = self.model.predict(df)
+        predictions = self.model.predict(df) #추후 추가
         return predictions
       
 model = SysModel()
@@ -81,7 +79,6 @@ y_predict = model.predict(x_test)
 label = targetname[y_predict[0]]
 #model.predict(x_test)
 print(label)
-
 
 
 
