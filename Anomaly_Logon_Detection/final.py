@@ -36,7 +36,7 @@ x_test = [
 ]
 
 
-x_test = pd.DataFrame(x_test, columns=['islan','isnewip','isnewuser','isvpn','percent','src_ip_c','total_c'])
+x_test = pd.DataFrame(x_test, columns=['islan','isnewip','isnewuser','isvpn','percent','src_ip_c'])
 
 best_index = np.argsort(cv_results['test_score'])[-1]
 
@@ -68,7 +68,7 @@ class SysModel:
 
     def predict(self, data, return_option='Prob'):
         #df = pd.DataFrame(data)
-        df = pd.DataFrame(x_test, columns=['islan','isnewip','isnewuser','isvpn','percent','src_ip_c','total_c'])
+        df = pd.DataFrame(x_test, columns=['islan','isnewip','isnewuser','isvpn','percent','src_ip_c'])
         if return_option == 'Prob':
             predictions = self.model.predict(df) #추후 추가
         else:
@@ -77,7 +77,7 @@ class SysModel:
       
 model = SysModel()
 x_test = [
-    ['0','0','0','0','0.9999882','121212','121212']
+    ['0','0','0','0','0.9999882','121212']
 ] 
 
 targetname = ['Normal','Malicious']
