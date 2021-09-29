@@ -20,10 +20,9 @@ newdf = df[fields]
 
 # newdf
 
-# drop all records where ProcessId in NaN (happens for WMI events, cannot classify [TODO: think how to overcome and add to dataset])
 newdf = newdf[~newdf.ProcessId.isna()]
 
-# drop EventID 5 - ProcessTerminated as not valuable
+# drop EventID 5
 newdf.drop(newdf[newdf.EventID == '5'].index, inplace=True)
 
 
@@ -53,28 +52,21 @@ newdf['arguments'][-5:]
 
 ## contains base64
 
-# add new features whether suspicious string are in arguments?
-# 1. base64?
 import re
 
-# will match at least 32 character long consequent string with base64 characters only
 b64_regex = r"[a-zA-Z0-9+\/]{64,}={0,2}"
 
-# test on some
 newdf['arguments'][newdf['arguments'].str.contains('enc')]
 
-# there's matches
 for i in newdf['arguments'][newdf['arguments'].apply(lambda x: re.search(b64_regex, x)).notnull()]:
     print(i,"\n")
   
-# map this search as 0 and 1 using astype(int)
 b64s = newdf['arguments'].apply(lambda x: re.search(b64_regex, x)).notnull()
 newdf['b64'] = b64s.astype(int)
 b64s[b64s]
 
 
-## URL & UNC paths?
-# matches if there's call for some file with extension (at the end dot) via UNC path
+## URL & UNC paths
 unc_regex = r"\\\\[a-zA-Z0-9]+\\[a-zA-Z0-9\\]+\."
 uncs = newdf['arguments'][newdf['arguments'].apply(lambda x: re.search(unc_regex, x)).notnull()]
 # we didn't had any of these launches in dataset btw
@@ -84,15 +76,14 @@ url_regex = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,
 urls = newdf['arguments'].apply(lambda x: re.search(url_regex, x)).notnull()
 urls[urls]
 
-# verified pd.concat part - merges two boolean series correctly
 newdf['unc_url'] = pd.concat([uncs, urls]).astype(int)
 
-# check if correct marking
 newdf[newdf['unc_url'].astype(bool)]
 
 
 ## Network connection
 newdf['network'] = newdf['Protocol'].notnull().astype(int)
+
 
 
 # preprocessed data save
@@ -112,7 +103,6 @@ from datetime import datetime
 import numpy as np
 
 newdf = newdf[['ProcessId','binary','path', 'unc_url', 'b64', 'network']]
-# treat eventID as int8
 #newdf['EventID'] = newdf['EventID'].astype('int8')
 #newdf.head()
 
@@ -205,13 +195,12 @@ from sklearn.model_selection import cross_validate
 import joblib
 %matplotlib inline
 
-# loading data - for my case, I divided my dataset into good data and malicious data 
 df = data
 # feature used 
 feature_cols = ["EventID","binary",	"path",	"b64",	"unc_url",	"network"]
 X = df[feature_cols]
 y = df['tag']
-# train and split data for testing 
+
 X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.2)
 
 le = LabelEncoder()
